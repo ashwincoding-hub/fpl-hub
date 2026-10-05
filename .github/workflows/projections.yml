@@ -1,0 +1,48 @@
+name: Refresh projections
+
+# Rebuilds src/data/projections.json from the live FPL API and commits it if it changed.
+# The commit triggers a Vercel redeploy. It also keeps the repo active, so GitHub doesn't
+# switch this scheduled workflow off after 60 days without commits.
+on:
+  schedule:
+    - cron: "17 5 * * *" # daily, 05:17 UTC (after the ~01:30 UK price update, odd minute to avoid the rush)
+    - cron: "17 17 * * *" # and 17:17 UTC to pick up evening team news
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: projections
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # only this job may push, and only the projections file
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check FPL is reachable from GitHub's servers
+        run: curl -sf -A "fpl-hub/0.1 (personal non-commercial project)" -o /dev/null -w "FPL bootstrap HTTP %{http_code}\n" https://fantasy.premierleague.com/api/bootstrap-static/
+      - run: npm run projections
+        env:
+          FPL_CACHE_HOURS: "0"
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- src/data/projections.json; then
+            echo "No change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/projections.json
+          git commit -m "Refresh projections"
+          git push
