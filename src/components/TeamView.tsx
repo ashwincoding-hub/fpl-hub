@@ -23,12 +23,14 @@ import { Card, useMounted } from "./bits";
 import { money, pts, useJson, useLookups } from "./hooks";
 import { Pitch, type CardInfo } from "./Pitch";
 import { PricesTable } from "./PricesTable";
+import { RagePanel } from "./RagePanel";
+import { ScoresCard } from "./ScoresCard";
 import { ShortlistPanel } from "./ShortlistPanel";
 import { useStore } from "./store";
 import { SuggestionsPanel } from "./SuggestionsPanel";
 import { TransferDrawer } from "./TransferDrawer";
 
-type Tab = "team" | "suggestions" | "prices" | "shortlist";
+type Tab = "team" | "suggestions" | "prices" | "shortlist" | "rage";
 
 const CHIP_LABEL: Record<Chip, string> = {
   wildcard: "Wildcard",
@@ -280,6 +282,7 @@ function Planner({
         {tabBtn("suggestions", "Suggestions")}
         {tabBtn("prices", "Price changes")}
         {tabBtn("shortlist", `Shortlist${mounted && shortlist.length ? ` (${shortlist.length})` : ""}`)}
+        {tabBtn("rage", "Rage meter 🗑️")}
       </div>
 
       {tab === "team" && (
@@ -391,6 +394,7 @@ function Planner({
           </div>
 
           <aside className="space-y-3">
+            <ScoresCard teamId={teamId} app={app} lookups={lookups} />
             <div className="rounded-xl border border-line bg-card p-3 text-sm">
               <h3 className="font-semibold">Transfers this week</h3>
               {ins.length === 0 ? (
@@ -424,6 +428,7 @@ function Planner({
       {tab === "suggestions" && <SuggestionsPanel plan={plan} data={app} lookups={lookups} onApply={applySuggestion} />}
       {tab === "prices" && <PricesTable data={app} lookups={lookups} squadIds={squadIds} />}
       {tab === "shortlist" && <ShortlistPanel data={app} lookups={lookups} squadIds={squadIds} />}
+      {tab === "rage" && <RagePanel team={team} />}
 
       {drawerSlot !== null && (
         <TransferDrawer

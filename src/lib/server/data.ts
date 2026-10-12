@@ -16,7 +16,7 @@ let bootstrapCache: { at: number; data: FplBootstrap } | null = null;
 let appDataCache: { at: number; data: AppData } | null = null;
 const BOOTSTRAP_TTL = 5 * 60_000;
 
-async function bootstrap(): Promise<FplBootstrap> {
+export async function bootstrap(): Promise<FplBootstrap> {
   if (bootstrapCache && Date.now() - bootstrapCache.at < BOOTSTRAP_TTL) return bootstrapCache.data;
   const data = await fpl.bootstrap();
   bootstrapCache = { at: Date.now(), data };
@@ -94,6 +94,10 @@ export async function getAppData(): Promise<AppData> {
         homeDifficulty: f.team_h_difficulty,
         awayDifficulty: f.team_a_difficulty,
         kickoff: f.kickoff_time,
+        odds: (() => {
+          const o = projections.fixtures?.find((x) => x.gw === f.event && x.home === f.team_h && x.away === f.team_a);
+          return o && { homeGoals: o.homeGoals, awayGoals: o.awayGoals, homeCs: o.homeCs, awayCs: o.awayCs };
+        })(),
       })),
   };
   appDataCache = { at: Date.now(), data };
@@ -159,5 +163,9 @@ export async function getTeamData(teamId: number): Promise<TeamData> {
     freeTransfers: estimateFreeTransfers(history, entry.started_event, lastGw, rules.maxFreeTransfers),
     chipsUsed: history.chips.map((c) => ({ name: c.name, event: c.event })),
     chipsAvailable: availableChips(bs.chips, history.chips, nextGw),
+    leagues: (entry.leagues?.classic ?? [])
+      .filter((l) => l.league_type === "x")
+      .map((l) => ({ id: l.id, name: l.name, size: l.rank_count, rank: l.entry_rank }))
+      .sort((a, b) => (a.size ?? 1e9) - (b.size ?? 1e9)),
   };
 }

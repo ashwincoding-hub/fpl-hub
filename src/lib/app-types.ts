@@ -1,6 +1,7 @@
 // Shapes sent from our API routes to the browser.
 
 import type { FplChipWindow, PositionId } from "./fpl/types";
+import type { RageGw } from "./rage";
 import type { Rules } from "./rules";
 
 export interface AppPlayer {
@@ -44,6 +45,8 @@ export interface AppFixture {
   homeDifficulty: number;
   awayDifficulty: number;
   kickoff: string | null;
+  // FPL Hub model: expected goals and clean-sheet chance per side, when projections cover this GW.
+  odds?: { homeGoals: number; awayGoals: number; homeCs: number; awayCs: number };
 }
 
 export interface AppData {
@@ -88,4 +91,57 @@ export interface TeamData {
   freeTransfers: number;
   chipsUsed: { name: string; event: number }[];
   chipsAvailable: string[];
+  // Private classic mini-leagues (public/system leagues like "Overall" are left out).
+  leagues: { id: number; name: string; size: number | null; rank: number | null }[];
+}
+
+// ---- Gameweek scores and the rage meter ----
+
+export interface GwMatch {
+  id: number;
+  kickoff: string | null;
+  home: number;
+  away: number;
+  homeScore: number | null;
+  awayScore: number | null;
+  status: "upcoming" | "live" | "finished";
+  minutes: number;
+  goals: { player: number; team: number; count: number; own: boolean }[];
+  assists: { player: number; team: number; count: number }[];
+}
+
+export interface GwView {
+  gw: number;
+  name: string;
+  finished: boolean;
+  matches: GwMatch[];
+  points: Record<number, [number, number]>; // player → [points, minutes], only players who played
+}
+
+export interface TeamGwView {
+  gw: number;
+  chip: string | null;
+  points: number;
+  hitCost: number;
+  benchPoints: number;
+  picks: { id: number; position: number; multiplier: number; captain: boolean; vice: boolean }[];
+  autoSubs: { in: number; out: number }[];
+}
+
+export interface RageResult {
+  teamId: number;
+  meter: number;
+  level: { emoji: string; label: string };
+  gws: RageGw[];
+}
+
+export interface LeagueRageRow {
+  entry: number;
+  teamName: string;
+  manager: string;
+  rank: number;
+  meter: number | null;
+  level: { emoji: string; label: string } | null;
+  lastChange: number | null; // meter change in the latest finished GW
+  worst: string | null; // the biggest pain item of the latest GW
 }

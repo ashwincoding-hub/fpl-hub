@@ -7,6 +7,8 @@ A free Fantasy Premier League planner. Enter your team ID to:
 - **Track price changes.** See who's closest to a rise or fall, the net transfers per hour, and when the change is expected.
 - **Shortlist players.** Shortlisted players about to rise, and squad players about to fall, are highlighted.
 - **Get transfer suggestions.** The best 1–2 transfer moves over a 1–6 GW horizon, compared with rolling the transfer, plus a chip radar.
+- **Scores and fixtures.** A card on the team page with match results (scorers and assists, your players in bold) and your own points for any past gameweek, plus next gameweek's fixtures with expected goals and clean-sheet %.
+- **Delete-the-App-o-Meter.** A 0–100 frustration score built from every finished gameweek: captain fails, vice hauls, bench points, transfer flops, hits, chip regret. Good calls bring it down, and old pain fades by a quarter each week. Each gameweek gets a receipt explaining the score, and there's a rage table for your private mini-leagues (top 30 managers). Weights are in `src/lib/rage.ts`.
 - **Solio odds.** [Solio Analytics](https://fpl.solioanalytics.com)' market-based numbers for the next gameweek: each match's expected goals and clean-sheet %, and their top 30 players by projected points next to FPL Hub's own projection.
 
 Not affiliated with the Premier League or Fantasy Premier League. Personal, non-commercial project.

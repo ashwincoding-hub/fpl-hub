@@ -52,6 +52,7 @@ function setup() {
     freeTransfers: 1,
     chipsUsed: [],
     chipsAvailable: [],
+    leagues: [],
   };
   return { players, plan: initPlan(team) };
 }

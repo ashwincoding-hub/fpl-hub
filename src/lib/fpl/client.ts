@@ -8,6 +8,8 @@ import type {
   FplEntry,
   FplFixture,
   FplHistory,
+  FplLeagueStandings,
+  FplLive,
   FplPicks,
   FplTransfer,
 } from "./types";
@@ -63,6 +65,9 @@ export const fpl = {
     get<FplPicks>(`/entry/${assertId(id)}/event/${assertId(gw)}/picks/`, noStore),
   history: (id: number) => get<FplHistory>(`/entry/${assertId(id)}/history/`, noStore),
   transfers: (id: number) => get<FplTransfer[]>(`/entry/${assertId(id)}/transfers/`, noStore),
+  live: (gw: number) => get<FplLive>(`/event/${assertId(gw)}/live/`, noStore),
+  leagueStandings: (id: number) =>
+    get<FplLeagueStandings>(`/leagues-classic/${assertId(id)}/standings/`, noStore),
   elementSummary: (id: number) =>
     get<FplElementSummary>(`/element-summary/${assertId(id)}/`, noStore),
 };

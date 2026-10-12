@@ -50,6 +50,7 @@ export interface FplEvent {
   name: string;
   deadline_time: string;
   finished: boolean;
+  average_entry_score?: number;
   is_current: boolean;
   is_next: boolean;
   is_previous: boolean;
@@ -119,7 +120,10 @@ export interface FplFixture {
   team_h_score: number | null;
   team_a_score: number | null;
   finished: boolean;
+  finished_provisional?: boolean; // full time, before bonus points are confirmed
   started: boolean | null;
+  minutes?: number;
+  stats?: FplFixtureStat[];
 }
 
 export interface FplEntry {
@@ -134,6 +138,15 @@ export interface FplEntry {
   summary_event_points: number;
   last_deadline_bank: number;
   last_deadline_value: number;
+  leagues?: {
+    classic: {
+      id: number;
+      name: string;
+      league_type: string; // "x" = private, "s" = system/public
+      entry_rank: number | null;
+      rank_count: number | null;
+    }[];
+  };
 }
 
 export interface FplPick {
@@ -160,6 +173,7 @@ export interface FplEntryHistoryRow {
 
 export interface FplPicks {
   active_chip: string | null;
+  automatic_subs?: { element_in: number; element_out: number; event: number }[];
   entry_history: FplEntryHistoryRow;
   picks: FplPick[];
 }
@@ -223,4 +237,22 @@ export interface FplElementSummaryPast {
 export interface FplElementSummary {
   history: FplElementSummaryHistory[];
   history_past: FplElementSummaryPast[];
+}
+
+export interface FplFixtureStat {
+  identifier: string; // goals_scored, assists, own_goals, ...
+  h: { value: number; element: number }[];
+  a: { value: number; element: number }[];
+}
+
+export interface FplLive {
+  elements: { id: number; stats: { minutes: number; total_points: number } }[];
+}
+
+export interface FplLeagueStandings {
+  league: { id: number; name: string };
+  standings: {
+    has_next: boolean;
+    results: { entry: number; entry_name: string; player_name: string; rank: number; total: number; event_total: number }[];
+  };
 }
