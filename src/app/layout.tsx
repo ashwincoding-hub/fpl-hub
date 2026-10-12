@@ -35,6 +35,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/prices" className="text-sm opacity-90 hover:opacity-100">
               Price changes
             </Link>
+            <Link href="/solio" className="text-sm opacity-90 hover:opacity-100">
+              Solio odds
+            </Link>
           </nav>
         </header>
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5">{children}</main>

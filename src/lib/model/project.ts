@@ -19,7 +19,7 @@ import type {
   TeamRating,
 } from "./types";
 
-export const MODEL_VERSION = "v1.0";
+export const MODEL_VERSION = "v1.1";
 
 // ---- Tunable constants (changed via the backtest) -------------------------------------------
 
@@ -351,4 +351,43 @@ export function projectAll(input: ProjectAllInput): Map<number, GwProjection[]> 
     );
   }
   return out;
+}
+
+// ---- Match-level projections ----------------------------------------------------------------------
+
+export interface FixtureOdds {
+  gw: number;
+  home: number;
+  away: number;
+  homeGoals: number; // expected goals scored by the home side
+  awayGoals: number;
+  homeCs: number; // P(home side keeps a clean sheet)
+  awayCs: number;
+}
+
+/** Expected goals and clean-sheet probabilities for each fixture, from the same team ratings. */
+export function fixtureOdds(
+  rows: MatchRow[],
+  fixtures: FixtureLite[],
+  targetGws: number[],
+  teams: number[],
+  priors?: Map<number, TeamRating>,
+): FixtureOdds[] {
+  const ratings = teamRatings(rows, Math.min(...targetGws), teams, priors);
+  const r = (t: number) => ratings.byTeam.get(t) ?? { att: 1, def: 1 };
+  return fixtures
+    .filter((f) => targetGws.includes(f.gw))
+    .map((f) => {
+      const homeGoals = ratings.avgGoals * r(f.home).att * r(f.away).def * MODEL_PARAMS.homeGoals;
+      const awayGoals = ratings.avgGoals * r(f.away).att * r(f.home).def * MODEL_PARAMS.awayGoals;
+      return {
+        gw: f.gw,
+        home: f.home,
+        away: f.away,
+        homeGoals: round2(homeGoals),
+        awayGoals: round2(awayGoals),
+        homeCs: round2(pZero(awayGoals)),
+        awayCs: round2(pZero(homeGoals)),
+      };
+    });
 }

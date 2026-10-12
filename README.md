@@ -7,6 +7,7 @@ A free Fantasy Premier League planner. Enter your team ID to:
 - **Track price changes.** See who's closest to a rise or fall, the net transfers per hour, and when the change is expected.
 - **Shortlist players.** Shortlisted players about to rise, and squad players about to fall, are highlighted.
 - **Get transfer suggestions.** The best 1–2 transfer moves over a 1–6 GW horizon, compared with rolling the transfer, plus a chip radar.
+- **Solio odds.** [Solio Analytics](https://fpl.solioanalytics.com)' market-based numbers for the next gameweek: each match's expected goals and clean-sheet %, and their top 30 players by projected points next to FPL Hub's own projection.
 
 Not affiliated with the Premier League or Fantasy Premier League. Personal, non-commercial project.
 
@@ -40,6 +41,7 @@ Browser ──► Next.js API routes on Vercel ──► FPL API (bootstrap, fix
 - **Projections** (`src/lib/model/project.ts`): for each player and fixture, expected points = the sum over each way of scoring of its probability × FPL points. That covers chance of starting and of playing 60+ minutes, goals and assists from xG/xA per 90 adjusted for the opponent, Poisson clean sheets and goals conceded from team xG ratings, saves, defensive contributions, bonus and cards. Early-season numbers are stabilised with last season's per-90 rates and team strength, from the [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League) dataset (MIT). The same code runs live and in backtests, and backtests only ever see data from before the gameweek being predicted.
 - **Price changes** come straight from FPL. Since 2026/27, `bootstrap-static` publishes each player's progress toward a change, net transfers per hour, and projections for the next three price updates. That's why this project needs no database.
 - **Planner and suggestions** (`src/lib/planner/`) are pure functions that run in the browser: best XI, auto-sub expectation, chips, hits, and a 1–2 transfer search.
+- **Solio odds** come from Solio's free public feed (`/api/data/latest.json`, which their robots.txt explicitly allows), fetched server-side and cached for 30 minutes, with credit and a link on the page. The free feed ranks only the top 30 players, and lists team numbers only for Solio's top clean-sheet and attacking teams. For the other teams in those matches, the numbers are worked out from Solio's figures for their opponent; FPL Hub's own model fills in only when Solio lists neither team.
 - **Your shortlist and saved plans** live in your browser's localStorage. Nothing about you is stored on a server.
 
 ## Accuracy

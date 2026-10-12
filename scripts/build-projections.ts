@@ -3,7 +3,7 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { MODEL_VERSION, projectAll } from "../src/lib/model/project";
+import { fixtureOdds, MODEL_VERSION, projectAll } from "../src/lib/model/project";
 import type { Availability } from "../src/lib/model/types";
 import type { ProjectionsFile } from "../src/lib/projections";
 import { rulesFromBootstrap } from "../src/lib/rules";
@@ -29,13 +29,14 @@ async function main() {
     bs.elements.map((e) => [e.id, { status: e.status, chance: e.chance_of_playing_next_round }]),
   );
 
+  const teamPriors = await teamPriorsFor(teams, "2025-26");
   const proj = projectAll({
     players: live.players,
     rows: live.rows,
     fixtures: live.fixturesLite,
     targetGws,
     teams: teams.map((t) => t.id),
-    teamPriors: await teamPriorsFor(teams, "2025-26"),
+    teamPriors,
     scoring: rules.scoring,
     defConThreshold: rules.scoring.defConThreshold,
     availability,
@@ -46,6 +47,7 @@ async function main() {
     modelVersion: MODEL_VERSION,
     gws: targetGws,
     players: {},
+    fixtures: fixtureOdds(live.rows, live.fixturesLite, targetGws, teams.map((t) => t.id), teamPriors),
   };
   for (const [id, list] of proj) {
     out.players[id] = {

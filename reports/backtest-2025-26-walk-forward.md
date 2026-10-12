@@ -1,6 +1,6 @@
 # Backtest: 2025/26 walk-forward (main evidence)
 
-Model v1.0 · generated 2026-09-28T14:50:03.933Z · data: 2025-26 (vaastav/Fantasy-Premier-League)
+Model v1.1 · generated 2026-10-12T04:17:12.929Z · data: 2025-26 (vaastav/Fantasy-Premier-League)
 
 Splits: train GW1–4 → predict GW5, 6, 7; train GW1–5 → predict GW6, 7, 8; train GW1–6 → predict GW7, 8, 9; train GW1–7 → predict GW8, 9, 10; train GW1–8 → predict GW9, 10, 11; train GW1–9 → predict GW10, 11, 12; train GW1–10 → predict GW11, 12, 13; train GW1–11 → predict GW12, 13, 14; train GW1–12 → predict GW13, 14, 15; train GW1–13 → predict GW14, 15, 16; train GW1–14 → predict GW15, 16, 17; train GW1–15 → predict GW16, 17, 18; train GW1–16 → predict GW17, 18, 19; train GW1–17 → predict GW18, 19, 20; train GW1–18 → predict GW19, 20, 21; train GW1–19 → predict GW20, 21, 22; train GW1–20 → predict GW21, 22, 23; train GW1–21 → predict GW22, 23, 24; train GW1–22 → predict GW23, 24, 25; train GW1–23 → predict GW24, 25, 26; train GW1–24 → predict GW25, 26, 27; train GW1–25 → predict GW26, 27, 28; train GW1–26 → predict GW27, 28, 29; train GW1–27 → predict GW28, 29, 30; train GW1–28 → predict GW29, 30, 31; train GW1–29 → predict GW30, 31, 32; train GW1–30 → predict GW31, 32, 33; train GW1–31 → predict GW32, 33, 34; train GW1–32 → predict GW33, 34, 35; train GW1–33 → predict GW34, 35, 36; train GW1–34 → predict GW35, 36, 37; train GW1–35 → predict GW36, 37, 38
 
